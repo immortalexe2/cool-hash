@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cool Hash Tool</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+        }
+        .overlay {
+            background-color: rgba(0, 0, 0, 0.6);
+            min-height: 100vh;
+            padding-top: 50px;
+        }
+        .result-box {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay container">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark rounded mb-4">
+            <a class="navbar-brand" href="#">Hash Tool</a>
+        </nav>
+
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card bg-dark text-white shadow">
+                    <div class="card-body">
+                        <h3 class="card-title text-center mb-4">Generate Hash</h3>
+                        <form id="hashForm" method="POST" action="/hash">
+                            <div class="mb-3">
+                                <label for="inputText" class="form-label">Enter Text</label>
+                                <input type="text" class="form-control" id="inputText" name="inputText" placeholder="Type something..." required />
+                            </div>
+                            <div class="mb-3">
+                                <label for="hashType" class="form-label">Select Hash Type</label>
+                                <select class="form-select" id="hashType" name="hashType" required>
+                                    <option value="md5">MD5</option>
+                                    <option value="sha1">SHA-1</option>
+                                    <option value="sha256">SHA-256</option>
+                                    <option value="sha512">SHA-512</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Generate</button>
+                        </form>
+
+                        <div id="result" class="result-box mt-4" style="display:none;">
+                            <h5>Hashed Output:</h5>
+                            <p id="hashOutput"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Optional: AJAX to update result without page reload -->
+    <script>
+        const form = document.getElementById('hashForm');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const inputText = document.getElementById('inputText').value;
+            const hashType = document.getElementById('hashType').value;
+
+            const response = await fetch('/hash', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ inputText, hashType })
+            });
+            const data = await response.json();
+            document.getElementById('hashOutput').textContent = data.hashed;
+            document.getElementById('result').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
